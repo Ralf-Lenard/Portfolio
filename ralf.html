@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ralf Lenard Capinding - Creative Portfolio</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+</head>
+<body class="dark-mode">
+    <!-- Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="cursor-follower"></div>
+
+    <!-- Noise Overlay -->
+    <div class="noise-overlay"></div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <svg class="loading-logo" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" />
+                <path class="loading-path" d="M 50,10 A 40,40 0 0 1 90,50" stroke="currentColor" stroke-width="8" fill="none" />
+            </svg>
+            <div class="loading-text">
+                <span>L</span>
+                <span>O</span>
+                <span>A</span>
+                <span>D</span>
+                <span>I</span>
+                <span>N</span>
+                <span>G</span>
+            </div>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="#home">
+                    <svg viewBox="0 0 50 50" class="logo-svg">
+                        <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="2" />
+                        <path d="M15,25 L35,25 M25,15 L25,35" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                    <span>RALF</span>
+                </a>
+            </div>
+            
+            <div class="nav-toggle" id="nav-toggle">
+                <div class="toggle-icon">
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Full Screen Menu -->
+    <div class="fullscreen-menu" id="fullscreen-menu">
+        <div class="menu-bg">
+            <div class="menu-bg-circle"></div>
+        </div>
+        <div class="menu-content">
+            <div class="menu-links">
+                <a href="#home" class="menu-link" data-text="Home">Home</a>
+                <a href="#about" class="menu-link" data-text="About">About</a>
+                <a href="#services" class="menu-link" data-text="Services">Services</a>
+                <a href="#contact" class="menu-link" data-text="Contact">Contact</a>
+            </div>
+            <div class="menu-footer">
+                <div class="menu-socials">
+                    <a href="https://www.facebook.com/ralf.capinding" class="social-icon"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-dribbble"></i></a>
+                    <a href="https://github.com/Ralf-Lenard" class="social-icon"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+                <div class="theme-switch">
+                    <button id="theme-toggle" class="theme-toggle-btn">
+                        <i class="fas fa-sun"></i>
+                        <i class="fas fa-moon"></i>
+                        <div class="toggle-ball"></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fixed Elements -->
+    <div class="fixed-elements">
+        <div class="scroll-indicator">
+            <div class="scroll-line">
+                <div class="scroll-progress"></div>
+            </div>
+        </div>
+        <div class="side-socials">
+            <a href="https://www.facebook.com/ralf.capinding" class="side-social-link"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="side-social-link"><i class="fab fa-dribbble"></i></a>
+            <a href="https://github.com/Ralf-Lenard" class="side-social-link"><i class="fab fa-github"></i></a>
+            <a href="#" class="side-social-link"><i class="fab fa-linkedin-in"></i></a>
+            <div class="social-line"></div>
+        </div>
+        <div class="side-email">
+            <a href="mailto:capindingralf@gmail.com">capindingralflenard@gmail.com</a>
+            <div class="email-line"></div>
+        </div>
+    </div>
+
+    <!-- 3D floating elements -->
+    <div class="floating-3d-elements">
+        <div class="floating-cube"></div>
+        <div class="floating-sphere"></div>
+        <div class="floating-pyramid"></div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section home-section">
+            <div class="container">
+                <div class="home-content">
+                    <div class="home-subtitle reveal-text">
+                        <div class="subtitle-line"></div>
+                        <span>Backend Developer</span>
+                    </div>
+                    <h1 class="home-title">
+                        <span class="reveal-text">Ralf Lenard</span>
+                        <span class="reveal-text delay-1">Capinding</span>
+                    </h1>
+                    <div class="home-description reveal-text delay-2">
+                        <p>Creating digital experiences that blend <span class="highlight">innovation</span>, <span class="highlight">functionality</span>, and <span class="highlight">aesthetics</span>.</p>
+                    </div>
+                    <div class="home-cta reveal-text delay-3">
+                        <a href="#contact" class="btn btn-primary">
+                            <span class="btn-text">Let's Talk</span>
+                            <span class="btn-icon"><i class="fas fa-arrow-right"></i></span>
+                        </a>
+                        <a href="#about" class="btn btn-secondary">
+                            <span class="btn-text">About Me</span>
+                        </a>
+                    </div>
+                </div>
+                <div class="home-visual">
+                    <div class="visual-container">
+                        <div class="visual-circle"></div>
+                        <div class="visual-img">
+                            <img src="ralf.jpg" alt="Ralf Lenard">
+                            <div class="img-overlay"></div>
+                        </div>
+                        <div class="visual-shapes">
+                            <div class="shape shape-1"></div>
+                            <div class="shape shape-2"></div>
+                            <div class="shape shape-3"></div>
+                        </div>
+                    </div>
+                    <div class="home-3d">
+                        <canvas id="three-canvas"></canvas>
+                    </div>
+                </div>
+                
+            <div class="section-number">01</div>
+            <div class="scroll-down">
+                <span>Scroll</span>
+                <div class="scroll-arrow">
+                    <i class="fas fa-long-arrow-alt-down"></i>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section about-section">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-subtitle reveal-text">
+                        <div class="subtitle-line"></div>
+                        <span>About Me</span>
+                    </div>
+                    <h2 class="section-title reveal-text delay-1">My Story & Expertise</h2>
+                </div>
+                
+                <div class="about-grid">
+                   <!-- Profile Card -->
+                   <div class="profile-card reveal-card" data-delay="0">
+                        <div class="profile-image">
+                            <img src="ralf.jpg" alt="Ralf Lenard">
+                            <div class="profile-overlay">
+                                <div class="profile-info">
+                                    <h3>Ralf Lenard</h3>
+                                    <p>Backend Developer</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">Capstone</span>
+                                <span class="stat-label">Project Completed</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">Eager</span>
+                                <span class="stat-label">To Learn & Grow</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bio Card -->
+                    <div class="bio-card reveal-card" data-delay="100">
+                        <div class="bio-content">
+                            <h3>Hello, I'm Ralf!</h3>
+                            <p>I'm a fresh graduate with a strong interest in backend development, especially in building secure, scalable systems using Laravel and PHP.</p>
+                            <p>My academic journey and capstone project have helped me develop solid technical skills, and I'm excited to continue growing as a developer in real-world environments.</p>
+                            
+                            <div class="bio-highlights">
+                                <div class="highlight-item">
+                                    <i class="fas fa-database"></i>
+                                    <span>Backend-Focused</span>
+                                </div>
+                                <div class="highlight-item">
+                                    <i class="fas fa-code-branch"></i>
+                                    <span>Laravel Enthusiast</span>
+                                </div>
+                                <div class="highlight-item">
+                                    <i class="fas fa-graduation-cap"></i>
+                                    <span>Fresh Graduate</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Skills Card -->
+                    <div class="skills-card reveal-card" data-delay="200">
+                        <h3>Technical Skills</h3>
+                        <div class="skills-list">
+                            
+                            <!-- Backend Skills -->
+                            <div class="skill-category">
+                                <h4>Backend</h4>
+                                <div class="skill-tags">
+                                    <span class="skill-tag">PHP</span>
+                                    <span class="skill-tag">Laravel</span>
+                                    <span class="skill-tag">MySQL</span>
+                                    <span class="skill-tag">RESTful APIs</span>
+                                    <span class="skill-tag">Authentication</span>
+                                    <span class="skill-tag">Database Design</span>
+                                </div>
+                            </div>
+
+                            <!-- Frontend (Basic Knowledge) -->
+                            <div class="skill-category">
+                                <h4>Frontend (Basic)</h4>
+                                <div class="skill-tags">
+                                    <span class="skill-tag">HTML5</span>
+                                    <span class="skill-tag">CSS3</span>
+                                    <span class="skill-tag">JavaScript</span>
+                                    <span class="skill-tag">Blade</span>
+                                    <span class="skill-tag">Bootstrap</span>
+                                </div>
+                            </div>
+
+                            <!-- Tools -->
+                            <div class="skill-category">
+                                <h4>Tools</h4>
+                                <div class="skill-tags">
+                                    <span class="skill-tag">Git</span>
+                                    <span class="skill-tag">Composer</span>
+                                    <span class="skill-tag">Postman</span>
+                                    <span class="skill-tag">XAMPP</span>
+                                    <span class="skill-tag">VS Code</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- Education Card -->
+                    <div class="education-card reveal-card" data-delay="300">
+                        <h3>Education & Journey</h3>
+                        <div class="education-timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-year">2020-2024</div>
+                                <div class="timeline-content">
+                                    <h4>Tarlac State University</h4>
+                                    <p>Bachelor of Science in Information Technology</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-year">2016-2020</div>
+                                <div class="timeline-content">
+                                    <h4>Benigno S. Aquino National High School</h4>
+                                    <p>Science, Technology, Engineering, and Mathematics</p>
+                                </div>
+                            </div>
+                            <div class="timeline-item">
+                                <div class="timeline-year">2010-2016</div>
+                                <div class="timeline-content">
+                                    <h4>Sta Cruz Concepcion Tarlac</h4>
+                                    <p>Elementary Education</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-number">02</div>
+        </section>
+
+        <!-- Services Section -->
+        <section id="services" class="section services-section">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-subtitle reveal-text">
+                        <div class="subtitle-line"></div>
+                        <span>My Services</span>
+                    </div>
+                    <h2 class="section-title reveal-text delay-1">What I Offer</h2>
+                </div>
+
+                <div class="services-grid">
+                    <!-- Backend Development -->
+                    <div class="service-card reveal-card" data-delay="0">
+                        <div class="service-image">
+                            <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop" alt="Backend Development">
+                            <div class="service-overlay">
+                                <div class="service-icon">
+                                    <i class="fas fa-server"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-content">
+                            <h3 class="service-title">Backend Development</h3>
+                            <p class="service-description">Building scalable, secure, and maintainable backend systems using modern frameworks and best practices.</p>
+                            <div class="service-features">
+                                <span>Laravel & PHP</span>
+                                <span>RESTful APIs</span>
+                                <span>Authentication</span>
+                                <span>Database Management</span>
+                            </div>
+                            <div class="service-number">01</div>
+                        </div>
+                    </div>
+
+                    <!-- API Integration -->
+                    <div class="service-card reveal-card" data-delay="100">
+                        <div class="service-image">
+                            <img src="https://www.ibexa.co/var/site/storage/images/_aliases/ibexa_content_full/3/4/1/0/300143-1-eng-GB/d4255a27c1fa-AdobeStock_261705271_What-is-an-API.jpeg?w=600&h=400&fit=crop" alt="API Development">
+                            <div class="service-overlay">
+                                <div class="service-icon">
+                                    <i class="fas fa-plug"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-content">
+                            <h3 class="service-title">API Development</h3>
+                            <p class="service-description">Creating efficient and secure RESTful APIs to connect frontend applications, mobile apps, or third-party services.</p>
+                            <div class="service-features">
+                                <span>REST APIs</span>
+                                <span>API Authentication</span>
+                                <span>JSON/XML Responses</span>
+                                <span>Third-party Integration</span>
+                            </div>
+                            <div class="service-number">02</div>
+                        </div>
+                    </div>
+
+                    <!-- Database Architecture -->
+                    <div class="service-card reveal-card" data-delay="200">
+                        <div class="service-image">
+                            <img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&h=400&fit=crop" alt="Database Architecture">
+                            <div class="service-overlay">
+                                <div class="service-icon">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-content">
+                            <h3 class="service-title">Database Design & Management</h3>
+                            <p class="service-description">Designing optimized and normalized database structures to ensure data integrity and high performance.</p>
+                            <div class="service-features">
+                                <span>MySQL</span>
+                                <span>Database Migrations</span>
+                                <span>Data Seeding</span>
+                                <span>Performance Optimization</span>
+                            </div>
+                            <div class="service-number">03</div>
+                        </div>
+                    </div>
+
+                    <!-- Basic Frontend Support -->
+                    <div class="service-card reveal-card" data-delay="300">
+                        <div class="service-image">
+                            <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=400&fit=crop" alt="Frontend Support">
+                            <div class="service-overlay">
+                                <div class="service-icon">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="service-content">
+                            <h3 class="service-title">Frontend Support</h3>
+                            <p class="service-description">Providing basic frontend development with clean layouts and responsive components when needed.</p>
+                            <div class="service-features">
+                                <span>HTML & CSS</span>
+                                <span>JavaScript</span>
+                                <span>Bootstrap</span>
+                                <span>Blade Templating</span>
+                            </div>
+                            <div class="service-number">04</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="section-number">03</div>
+        </section>
+
+
+        <!-- Contact Section -->
+        <section id="contact" class="section contact-section">
+            <div class="container">
+                <div class="section-header">
+                    <div class="section-subtitle reveal-text">
+                        <div class="subtitle-line"></div>
+                        <span>Get In Touch</span>
+                    </div>
+                    <h2 class="section-title reveal-text delay-1">Let's Work Together</h2>
+                </div>
+                
+                <div class="contact-content">
+                    <div class="contact-info reveal-text delay-2">
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="info-content">
+                                <h3>Email</h3>
+                                <a href="mailto:capindingralf@gmail.com">capindingralflenard@gmail.com</a>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="info-content">
+                                <h3>Phone</h3>
+                                <a href="tel:09933958459">09933958459</a>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="info-content">
+                                <h3>Location</h3>
+                                <p>Tarlac, Philippines</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-socials">
+                            <h3>Follow Me</h3>
+                            <div class="social-links">
+                                <a href="https://www.facebook.com/ralf.capinding" class="social-link"><i class="fab fa-facebook"></i></a>
+                                <a href="#" class="social-link"><i class="fab fa-dribbble"></i></a>
+                                <a href="https://github.com/Ralf-Lenard" class="social-link"><i class="fab fa-github"></i></a>
+                                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="contact-form-container reveal-text delay-3">
+                        <form class="contact-form" id="contact-form">
+                            <div class="form-group">
+                                <input type="text" id="name" name="name" required>
+                                <label for="name">Your Name</label>
+                                <div class="form-line"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="email" id="email" name="email" required>
+                                <label for="email">Your Email</label>
+                                <div class="form-line"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <input type="text" id="subject" name="subject">
+                                <label for="subject">Subject</label>
+                                <div class="form-line"></div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <textarea id="message" name="message" rows="5" required></textarea>
+                                <label for="message">Your Message</label>
+                                <div class="form-line"></div>
+                            </div>
+                            
+                            <button type="submit" class="btn btn-primary">
+                                <span class="btn-text">Send Message</span>
+                                <span class="btn-icon"><i class="fas fa-paper-plane"></i></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="section-number">04</div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <svg viewBox="0 0 50 50" class="logo-svg">
+                        <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="2" />
+                        <path d="M15,25 L35,25 M25,15 L25,35" stroke="currentColor" stroke-width="2" />
+                    </svg>
+                    <span>RALF</span>
+                </div>
+                
+                <div class="footer-links">
+                    <a href="#home">Home</a>
+                    <a href="#about">About</a>
+                    <a href="#services">Services</a>
+                    <a href="#contact">Contact</a>
+                </div>
+                
+                <div class="footer-socials">
+                    <a href="https://www.facebook.com/ralf.capinding" class="social-link"><i class="fab fa-facebook"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-dribbble"></i></a>
+                    <a href="https://github.com/Ralf-Lenard" class="social-link"><i class="fab fa-github"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2023 Ralf Lenard Capinding. All rights reserved.</p>
+                <p>Designed & Developed with <i class="fas fa-heart"></i></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="three-scene.js"></script>
+</body>
+</html>
