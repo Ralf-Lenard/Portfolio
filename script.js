@@ -38,7 +38,7 @@ document.addEventListener("mousemove", (e) => {
 })
 
 // Cursor hover effects
-document.querySelectorAll("a, button, .service-card").forEach((el) => {
+document.querySelectorAll("a, button, .service-card, .project-card").forEach((el) => {
   el.addEventListener("mouseenter", () => {
     if (customCursor && cursorFollower) {
       customCursor.style.width = "20px"
@@ -236,7 +236,7 @@ if (contactForm) {
 }
 
 // Magnetic Elements
-document.querySelectorAll(".btn, .service-card").forEach((el) => {
+document.querySelectorAll(".btn, .service-card, .project-card").forEach((el) => {
   el.addEventListener("mousemove", (e) => {
     const rect = el.getBoundingClientRect()
     const x = e.clientX - rect.left - rect.width / 2
@@ -252,7 +252,7 @@ document.querySelectorAll(".btn, .service-card").forEach((el) => {
 
 // 3D Card Tilt Effects
 function init3DCardEffects() {
-  const cards = document.querySelectorAll(".service-card, .profile-card, .bio-card, .skills-card, .education-card")
+  const cards = document.querySelectorAll(".service-card, .profile-card, .bio-card, .skills-card, .education-card, .project-card")
 
   cards.forEach((card) => {
     card.addEventListener("mousemove", (e) => {
