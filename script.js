@@ -33,6 +33,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeTypewriter()
   initializeCounters()
   initializeTheme()
+  initializeScrollProgress()
 })
 
 // ===== PARTICLE BACKGROUND =====
@@ -201,27 +202,32 @@ function initializeCursor() {
 
 // ===== ENHANCED NAVIGATION =====
 function initializeNavigation() {
-  // Smooth scrolling for nav links
-  document.querySelectorAll(".nav-link, a[href^='#']").forEach((link) => {
+  // Smooth scrolling for all navigation links
+  const navLinks = document.querySelectorAll('.nav-link, .footer-links a, a[href^="#"]')
+
+  navLinks.forEach((link) => {
     link.addEventListener("click", (e) => {
       e.preventDefault()
-      const targetId = link.getAttribute("href").substring(1)
+
+      const href = link.getAttribute("href")
+      if (!href || href === "#") return
+
+      const targetId = href.substring(1)
       const targetSection = document.getElementById(targetId)
 
       if (targetSection) {
-        gsap.to(window, {
-          duration: 1.5,
-          scrollTo: { y: targetSection, offsetY: 100 },
-          ease: "power2.inOut",
+        // Calculate offset for fixed header
+        const headerHeight = 100
+        const targetPosition = targetSection.offsetTop - headerHeight
+
+        // Smooth scroll to target
+        window.scrollTo({
+          top: targetPosition,
+          behavior: "smooth",
         })
 
         // Update active nav link
-        document.querySelectorAll(".nav-link").forEach((navLink) => {
-          navLink.classList.remove("active")
-        })
-        if (link.classList.contains("nav-link")) {
-          link.classList.add("active")
-        }
+        updateActiveNavLink(targetId)
       }
     })
   })
@@ -240,22 +246,35 @@ function initializeNavigation() {
     "scroll",
     throttle(() => {
       updateNavBackground()
-      updateActiveNavLink()
+      updateActiveNavLinkOnScroll()
+      updateScrollProgress()
     }, 16),
   )
 }
 
-function updateActiveNavLink() {
+function updateActiveNavLink(targetId) {
+  const navLinks = document.querySelectorAll(".nav-link")
+
+  navLinks.forEach((link) => {
+    link.classList.remove("active")
+    if (link.getAttribute("href") === `#${targetId}`) {
+      link.classList.add("active")
+    }
+  })
+}
+
+function updateActiveNavLinkOnScroll() {
   const sections = document.querySelectorAll(".section")
   const navLinks = document.querySelectorAll(".nav-link")
 
   let currentSection = ""
+  const scrollPosition = window.pageYOffset + 150
 
   sections.forEach((section) => {
-    const sectionTop = section.offsetTop - 150
+    const sectionTop = section.offsetTop
     const sectionHeight = section.offsetHeight
 
-    if (window.pageYOffset >= sectionTop && window.pageYOffset < sectionTop + sectionHeight) {
+    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
       currentSection = section.getAttribute("id")
     }
   })
@@ -276,6 +295,22 @@ function updateNavBackground() {
     } else {
       mainNav.classList.remove("scrolled")
     }
+  }
+}
+
+// ===== SCROLL PROGRESS =====
+function initializeScrollProgress() {
+  window.addEventListener("scroll", updateScrollProgress)
+}
+
+function updateScrollProgress() {
+  const scrollTop = window.pageYOffset
+  const windowHeight = window.innerHeight
+  const documentHeight = document.documentElement.scrollHeight
+
+  const scrollPercentage = (scrollTop / (documentHeight - windowHeight)) * 100
+  if (scrollProgress) {
+    scrollProgress.style.width = Math.min(scrollPercentage, 100) + "%"
   }
 }
 
@@ -622,15 +657,3 @@ document.querySelectorAll(".tilt-card").forEach((card) => {
 setTimeout(() => {
   initializeSplitText()
 }, 1000)
-
-// Function to update scroll progress
-function updateScrollProgress() {
-  const scrollTop = window.pageYOffset
-  const windowHeight = window.innerHeight
-  const documentHeight = document.documentElement.scrollHeight
-
-  const scrollPercentage = (scrollTop / (documentHeight - windowHeight)) * 100
-  if (scrollProgress) {
-    scrollProgress.style.width = scrollPercentage + "%"
-  }
-}
