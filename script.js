@@ -1,3 +1,10 @@
+// Enhanced Portfolio Script with Advanced Animations
+const gsap = window.gsap // Declare gsap variable
+const ScrollTrigger = window.ScrollTrigger // Declare ScrollTrigger variable
+if (typeof gsap !== "undefined" && typeof ScrollTrigger !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger)
+}
+
 // DOM Elements
 const loadingScreen = document.getElementById("loading-screen")
 const themeToggle = document.getElementById("theme-toggle")
@@ -10,23 +17,157 @@ const scrollProgress = document.querySelector(".scroll-progress")
 
 // Global Variables
 let isLoading = true
-let currentSection = "home"
+const currentSection = "home"
 let isMenuOpen = false
+let mouseX = 0
+let mouseY = 0
 
-// Loading Screen
-window.addEventListener("load", () => {
-  setTimeout(() => {
-    if (loadingScreen) {
-      loadingScreen.classList.add("hidden")
-      isLoading = false
-      initializeAnimations()
-    }
-  }, 3000)
+// Initialize everything when DOM is loaded
+document.addEventListener("DOMContentLoaded", () => {
+  initializeParticles()
+  initializeLoadingScreen()
+  initializeCursor()
+  initializeNavigation()
+  initializeScrollAnimations()
+  initializeMagneticElements()
+  initializeTypewriter()
+  initializeCounters()
+  initializeTheme()
 })
 
-// Custom Cursor
-document.addEventListener("mousemove", (e) => {
-  if (customCursor && cursorFollower) {
+// ===== PARTICLE BACKGROUND =====
+function initializeParticles() {
+  const canvas = document.getElementById("particle-canvas")
+  if (!canvas) return
+
+  const ctx = canvas.getContext("2d")
+  let particles = []
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+  }
+
+  function createParticle() {
+    return {
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: (Math.random() - 0.5) * 0.5,
+      size: Math.random() * 2 + 1,
+      opacity: Math.random() * 0.5 + 0.2,
+      color: Math.random() > 0.5 ? "#ff3c00" : "#3d5af1",
+    }
+  }
+
+  function initParticles() {
+    particles = []
+    for (let i = 0; i < 50; i++) {
+      particles.push(createParticle())
+    }
+  }
+
+  function updateParticles() {
+    particles.forEach((particle) => {
+      particle.x += particle.vx
+      particle.y += particle.vy
+
+      if (particle.x < 0 || particle.x > canvas.width) particle.vx *= -1
+      if (particle.y < 0 || particle.y > canvas.height) particle.vy *= -1
+
+      // Mouse interaction
+      const dx = mouseX - particle.x
+      const dy = mouseY - particle.y
+      const distance = Math.sqrt(dx * dx + dy * dy)
+
+      if (distance < 100) {
+        particle.x -= dx * 0.01
+        particle.y -= dy * 0.01
+      }
+    })
+  }
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    particles.forEach((particle) => {
+      ctx.beginPath()
+      ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2)
+      ctx.fillStyle =
+        particle.color +
+        Math.floor(particle.opacity * 255)
+          .toString(16)
+          .padStart(2, "0")
+      ctx.fill()
+
+      // Draw connections
+      particles.forEach((otherParticle) => {
+        const dx = particle.x - otherParticle.x
+        const dy = particle.y - otherParticle.y
+        const distance = Math.sqrt(dx * dx + dy * dy)
+
+        if (distance < 100) {
+          ctx.beginPath()
+          ctx.moveTo(particle.x, particle.y)
+          ctx.lineTo(otherParticle.x, otherParticle.y)
+          ctx.strokeStyle = `rgba(255, 60, 0, ${0.1 * (1 - distance / 100)})`
+          ctx.stroke()
+        }
+      })
+    })
+  }
+
+  function animate() {
+    updateParticles()
+    drawParticles()
+    requestAnimationFrame(animate)
+  }
+
+  resizeCanvas()
+  initParticles()
+  animate()
+
+  window.addEventListener("resize", () => {
+    resizeCanvas()
+    initParticles()
+  })
+}
+
+// ===== ENHANCED LOADING SCREEN =====
+function initializeLoadingScreen() {
+  let progress = 0
+  const progressBar = document.querySelector(".loading-progress")
+  const percentage = document.querySelector(".loading-percentage")
+
+  const interval = setInterval(() => {
+    progress += Math.random() * 15
+    if (progress > 100) progress = 100
+
+    if (progressBar) progressBar.style.width = progress + "%"
+    if (percentage) percentage.textContent = Math.floor(progress) + "%"
+
+    if (progress >= 100) {
+      clearInterval(interval)
+      setTimeout(() => {
+        if (loadingScreen) {
+          loadingScreen.classList.add("hidden")
+          isLoading = false
+          document.body.style.overflow = "auto"
+          initializeRevealAnimations()
+        }
+      }, 500)
+    }
+  }, 100)
+}
+
+// ===== ENHANCED CURSOR =====
+function initializeCursor() {
+  if (!customCursor || !cursorFollower) return
+
+  document.addEventListener("mousemove", (e) => {
+    mouseX = e.clientX
+    mouseY = e.clientY
+
     customCursor.style.left = e.clientX + "px"
     customCursor.style.top = e.clientY + "px"
 
@@ -34,111 +175,95 @@ document.addEventListener("mousemove", (e) => {
       cursorFollower.style.left = e.clientX + "px"
       cursorFollower.style.top = e.clientY + "px"
     }, 100)
-  }
-})
+  })
 
-// Cursor hover effects
-document.querySelectorAll("a, button, .service-card, .project-card").forEach((el) => {
-  el.addEventListener("mouseenter", () => {
-    if (customCursor && cursorFollower) {
+  // Enhanced cursor effects
+  const interactiveElements = document.querySelectorAll("a, button, .tilt-card, .magnetic")
+
+  interactiveElements.forEach((el) => {
+    el.addEventListener("mouseenter", () => {
       customCursor.style.width = "20px"
       customCursor.style.height = "20px"
       cursorFollower.style.width = "60px"
       cursorFollower.style.height = "60px"
-    }
-  })
+      cursorFollower.style.borderColor = "#ff3c00"
+    })
 
-  el.addEventListener("mouseleave", () => {
-    if (customCursor && cursorFollower) {
+    el.addEventListener("mouseleave", () => {
       customCursor.style.width = "8px"
       customCursor.style.height = "8px"
       cursorFollower.style.width = "40px"
       cursorFollower.style.height = "40px"
-    }
-  })
-})
-
-// Fullscreen Menu Toggle
-if (navToggle) {
-  navToggle.addEventListener("click", () => {
-    isMenuOpen = !isMenuOpen
-    navToggle.classList.toggle("active")
-    if (fullscreenMenu) {
-      fullscreenMenu.classList.toggle("active")
-    }
-    document.body.style.overflow = isMenuOpen ? "hidden" : "auto"
+      cursorFollower.style.borderColor = "#ff3c00"
+    })
   })
 }
 
-// Menu links
-document.querySelectorAll(".menu-link").forEach((link) => {
-  link.addEventListener("click", (e) => {
-    e.preventDefault()
-    const targetId = link.getAttribute("href").substring(1)
-    scrollToSection(targetId)
-    closeMenu()
-  })
-})
+// ===== ENHANCED NAVIGATION =====
+function initializeNavigation() {
+  // Smooth scrolling for nav links
+  document.querySelectorAll(".nav-link, a[href^='#']").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault()
+      const targetId = link.getAttribute("href").substring(1)
+      const targetSection = document.getElementById(targetId)
 
-function closeMenu() {
-  isMenuOpen = false
+      if (targetSection) {
+        gsap.to(window, {
+          duration: 1.5,
+          scrollTo: { y: targetSection, offsetY: 100 },
+          ease: "power2.inOut",
+        })
+
+        // Update active nav link
+        document.querySelectorAll(".nav-link").forEach((navLink) => {
+          navLink.classList.remove("active")
+        })
+        if (link.classList.contains("nav-link")) {
+          link.classList.add("active")
+        }
+      }
+    })
+  })
+
+  // Mobile menu toggle (for responsive)
   if (navToggle) {
-    navToggle.classList.remove("active")
-  }
-  if (fullscreenMenu) {
-    fullscreenMenu.classList.remove("active")
-  }
-  document.body.style.overflow = "auto"
-}
-
-// Theme Toggle
-if (themeToggle) {
-  themeToggle.addEventListener("click", () => {
-    document.body.classList.toggle("light-mode")
-    const isLight = document.body.classList.contains("light-mode")
-    localStorage.setItem("theme", isLight ? "light" : "dark")
-  })
-}
-
-// Load saved theme
-const savedTheme = localStorage.getItem("theme")
-if (savedTheme === "light") {
-  document.body.classList.add("light-mode")
-}
-
-// Smooth Scrolling Function
-function scrollToSection(sectionId) {
-  const targetSection = document.getElementById(sectionId)
-  if (targetSection) {
-    const offsetTop = targetSection.offsetTop - 100
-    window.scrollTo({
-      top: offsetTop,
-      behavior: "smooth",
+    navToggle.addEventListener("click", () => {
+      isMenuOpen = !isMenuOpen
+      navToggle.classList.toggle("active")
+      // Add mobile menu functionality here if needed
     })
   }
+
+  // Scroll effects
+  window.addEventListener(
+    "scroll",
+    throttle(() => {
+      updateNavBackground()
+      updateActiveNavLink()
+    }, 16),
+  )
 }
 
-// Scroll Progress and Active Navigation
-function updateScrollProgress() {
-  const scrollTop = window.pageYOffset
-  const docHeight = document.documentElement.scrollHeight - window.innerHeight
-  const scrollPercent = (scrollTop / docHeight) * 100
-  if (scrollProgress) {
-    scrollProgress.style.width = scrollPercent + "%"
-  }
-}
-
-function updateActiveSection() {
+function updateActiveNavLink() {
   const sections = document.querySelectorAll(".section")
-  const scrollPosition = window.scrollY + 200
+  const navLinks = document.querySelectorAll(".nav-link")
+
+  let currentSection = ""
 
   sections.forEach((section) => {
-    const sectionTop = section.offsetTop
+    const sectionTop = section.offsetTop - 150
     const sectionHeight = section.offsetHeight
-    const sectionId = section.getAttribute("id")
 
-    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
-      currentSection = sectionId
+    if (window.pageYOffset >= sectionTop && window.pageYOffset < sectionTop + sectionHeight) {
+      currentSection = section.getAttribute("id")
+    }
+  })
+
+  navLinks.forEach((link) => {
+    link.classList.remove("active")
+    if (link.getAttribute("href") === `#${currentSection}`) {
+      link.classList.add("active")
     }
   })
 }
@@ -146,7 +271,7 @@ function updateActiveSection() {
 function updateNavBackground() {
   const scrollTop = window.pageYOffset
   if (mainNav) {
-    if (scrollTop > 100) {
+    if (scrollTop > 50) {
       mainNav.classList.add("scrolled")
     } else {
       mainNav.classList.remove("scrolled")
@@ -154,17 +279,234 @@ function updateNavBackground() {
   }
 }
 
-// Event Listeners
-window.addEventListener("scroll", () => {
-  updateScrollProgress()
-  updateActiveSection()
-  updateNavBackground()
-})
+// ===== SCROLL ANIMATIONS WITH GSAP =====
+function initializeScrollAnimations() {
+  // Reveal animations
+  gsap.utils.toArray(".reveal-text").forEach((element, index) => {
+    gsap.fromTo(
+      element,
+      { y: 100, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        delay: index * 0.1,
+        scrollTrigger: {
+          trigger: element,
+          start: "top 80%",
+          end: "bottom 20%",
+          toggleActions: "play none none reverse",
+        },
+      },
+    )
+  })
 
-// Initialize Animations
-function initializeAnimations() {
-  // Initial reveal check
-  const revealElements = document.querySelectorAll(".reveal-text, .reveal-image, .reveal-card")
+  // Card animations
+  gsap.utils.toArray(".reveal-card").forEach((card, index) => {
+    gsap.fromTo(
+      card,
+      { y: 80, opacity: 0, rotationX: 45 },
+      {
+        y: 0,
+        opacity: 1,
+        rotationX: 0,
+        duration: 1.2,
+        delay: index * 0.2,
+        scrollTrigger: {
+          trigger: card,
+          start: "top 85%",
+          end: "bottom 15%",
+          toggleActions: "play none none reverse",
+        },
+      },
+    )
+  })
+
+  // Timeline animations
+  gsap.utils.toArray(".timeline-item").forEach((item, index) => {
+    gsap.fromTo(
+      item,
+      { x: -100, opacity: 0 },
+      {
+        x: 0,
+        opacity: 1,
+        duration: 0.8,
+        delay: index * 0.3,
+        scrollTrigger: {
+          trigger: item,
+          start: "top 90%",
+          toggleActions: "play none none reverse",
+        },
+      },
+    )
+  })
+
+  // Parallax effects
+  gsap.utils.toArray(".floating-shape").forEach((shape) => {
+    gsap.to(shape, {
+      y: -100,
+      rotation: 360,
+      duration: 2,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+      scrollTrigger: {
+        trigger: shape,
+        start: "top bottom",
+        end: "bottom top",
+        scrub: 1,
+      },
+    })
+  })
+
+  // Section number animations
+  gsap.utils.toArray(".section-number").forEach((number) => {
+    gsap.fromTo(
+      number,
+      { scale: 0.5, opacity: 0 },
+      {
+        scale: 1,
+        opacity: 0.1,
+        duration: 1,
+        scrollTrigger: {
+          trigger: number.parentElement,
+          start: "top 80%",
+          toggleActions: "play none none reverse",
+        },
+      },
+    )
+  })
+}
+
+// ===== MAGNETIC ELEMENTS =====
+function initializeMagneticElements() {
+  document.querySelectorAll(".magnetic").forEach((element) => {
+    element.addEventListener("mousemove", (e) => {
+      const rect = element.getBoundingClientRect()
+      const x = e.clientX - rect.left - rect.width / 2
+      const y = e.clientY - rect.top - rect.height / 2
+
+      gsap.to(element, {
+        x: x * 0.3,
+        y: y * 0.3,
+        duration: 0.3,
+        ease: "power2.out",
+      })
+    })
+
+    element.addEventListener("mouseleave", () => {
+      gsap.to(element, {
+        x: 0,
+        y: 0,
+        duration: 0.5,
+        ease: "elastic.out(1, 0.3)",
+      })
+    })
+  })
+}
+
+// ===== TYPEWRITER EFFECT =====
+function initializeTypewriter() {
+  const typewriterElements = document.querySelectorAll(".typewriter")
+
+  typewriterElements.forEach((element) => {
+    const text = element.getAttribute("data-text") || element.textContent
+    element.textContent = ""
+
+    let i = 0
+    const timer = setInterval(() => {
+      element.textContent += text.charAt(i)
+      i++
+      if (i > text.length) {
+        clearInterval(timer)
+        element.style.borderRight = "none"
+      }
+    }, 100)
+  })
+}
+
+// ===== SPLIT TEXT ANIMATION =====
+function initializeSplitText() {
+  document.querySelectorAll(".split-text").forEach((element) => {
+    const text = element.textContent
+    element.innerHTML = text
+      .split("")
+      .map(
+        (char) =>
+          `<span style="display: inline-block; opacity: 0; transform: translateY(50px);">${char === " " ? "&nbsp;" : char}</span>`,
+      )
+      .join("")
+
+    const chars = element.querySelectorAll("span")
+
+    ScrollTrigger.create({
+      trigger: element,
+      start: "top 80%",
+      onEnter: () => {
+        gsap.to(chars, {
+          opacity: 1,
+          y: 0,
+          duration: 0.05,
+          stagger: 0.02,
+          ease: "back.out(1.7)",
+        })
+      },
+    })
+  })
+}
+
+// ===== COUNTER ANIMATIONS =====
+function initializeCounters() {
+  document.querySelectorAll(".counter").forEach((counter) => {
+    const target = Number.parseInt(counter.getAttribute("data-target"))
+
+    ScrollTrigger.create({
+      trigger: counter,
+      start: "top 80%",
+      onEnter: () => {
+        gsap.to(counter, {
+          innerHTML: target,
+          duration: 2,
+          ease: "power2.out",
+          snap: { innerHTML: 1 },
+          onUpdate: () => {
+            counter.innerHTML = Math.ceil(counter.innerHTML)
+          },
+        })
+      },
+    })
+  })
+}
+
+// ===== THEME TOGGLE =====
+function initializeTheme() {
+  const savedTheme = localStorage.getItem("theme")
+  if (savedTheme === "light") {
+    document.body.classList.add("light-mode")
+  }
+
+  if (themeToggle) {
+    themeToggle.addEventListener("click", () => {
+      document.body.classList.toggle("light-mode")
+      const isLight = document.body.classList.contains("light-mode")
+      localStorage.setItem("theme", isLight ? "light" : "dark")
+
+      // Animate theme transition
+      gsap.to(document.body, {
+        duration: 0.5,
+        ease: "power2.inOut",
+      })
+
+      // Update 3D scene theme if available
+      if (window.threeScene) {
+        window.threeScene.updateTheme(!isLight)
+      }
+    })
+  }
+}
+
+// ===== REVEAL ANIMATIONS =====
+function initializeRevealAnimations() {
   const observer = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
@@ -182,33 +524,30 @@ function initializeAnimations() {
     },
   )
 
-  revealElements.forEach((el) => observer.observe(el))
-
-  // Initialize 3D effects
-  initialize3DEffects()
+  document.querySelectorAll(".reveal-text, .reveal-image, .reveal-card, .reveal-timeline").forEach((el) => {
+    observer.observe(el)
+  })
 }
 
-// Contact Form Handling
+// ===== CONTACT FORM =====
 const contactForm = document.getElementById("contact-form")
 if (contactForm) {
   contactForm.addEventListener("submit", (e) => {
     e.preventDefault()
 
-    // Get form data
     const formData = new FormData(contactForm)
     const name = formData.get("name")
     const email = formData.get("email")
-    const subject = formData.get("subject")
     const message = formData.get("message")
 
-    // Simple validation
     if (name && email && message) {
-      // Simulate form submission
       const submitBtn = contactForm.querySelector(".btn")
       const btnText = submitBtn.querySelector(".btn-text")
       const btnIcon = submitBtn.querySelector(".btn-icon")
       const originalText = btnText.textContent
 
+      // Animate button
+      gsap.to(submitBtn, { scale: 0.95, duration: 0.1 })
       btnText.textContent = "Sending..."
       btnIcon.innerHTML = '<i class="fas fa-spinner fa-spin"></i>'
       submitBtn.disabled = true
@@ -216,6 +555,7 @@ if (contactForm) {
       setTimeout(() => {
         btnText.textContent = "Message Sent!"
         btnIcon.innerHTML = '<i class="fas fa-check"></i>'
+        gsap.to(submitBtn, { scale: 1, duration: 0.3, ease: "back.out(1.7)" })
 
         setTimeout(() => {
           btnText.textContent = originalText
@@ -235,125 +575,11 @@ if (contactForm) {
   })
 }
 
-// Magnetic Elements
-document.querySelectorAll(".btn, .service-card, .project-card").forEach((el) => {
-  el.addEventListener("mousemove", (e) => {
-    const rect = el.getBoundingClientRect()
-    const x = e.clientX - rect.left - rect.width / 2
-    const y = e.clientY - rect.top - rect.height / 2
-
-    el.style.transform = `translate(${x * 0.1}px, ${y * 0.1}px)`
-  })
-
-  el.addEventListener("mouseleave", () => {
-    el.style.transform = ""
-  })
-})
-
-// 3D Card Tilt Effects
-function init3DCardEffects() {
-  const cards = document.querySelectorAll(".service-card, .profile-card, .bio-card, .skills-card, .education-card, .project-card")
-
-  cards.forEach((card) => {
-    card.addEventListener("mousemove", (e) => {
-      const rect = card.getBoundingClientRect()
-      const x = e.clientX - rect.left
-      const y = e.clientY - rect.top
-
-      const centerX = rect.width / 2
-      const centerY = rect.height / 2
-
-      const rotateX = (y - centerY) / 10
-      const rotateY = (centerX - x) / 10
-
-      card.style.transform = `
-        perspective(1000px) 
-        rotateX(${rotateX}deg) 
-        rotateY(${rotateY}deg) 
-        translateZ(10px)
-      `
-    })
-
-    card.addEventListener("mouseleave", () => {
-      card.style.transform = "perspective(1000px) rotateX(0deg) rotateY(0deg) translateZ(0px)"
-    })
-  })
-}
-
-// Add parallax 3D scrolling effect
-function init3DParallax() {
-  const elements = document.querySelectorAll(".floating-cube, .floating-sphere, .floating-pyramid")
-
-  window.addEventListener("scroll", () => {
-    const scrolled = window.pageYOffset
-
-    elements.forEach((element, index) => {
-      const speed = (index + 1) * 0.5
-      const yPos = -(scrolled * speed * 0.1)
-      const rotateY = scrolled * 0.1 * (index + 1)
-
-      element.style.transform = `
-        translateY(${yPos}px) 
-        rotateY(${rotateY}deg) 
-        rotateX(${rotateY * 0.5}deg)
-      `
-    })
-  })
-}
-
-// Initialize 3D effects
-function initialize3DEffects() {
-  init3DCardEffects()
-  init3DParallax()
-}
-
-// Preload Critical Resources
-function preloadImages() {
-  const images = [
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=600&fit=crop&crop=face",
-    "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=800&fit=crop&crop=face",
-    "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1586717791821-3f44a563fa4c?w=600&h=400&fit=crop",
-    "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&h=400&fit=crop",
-  ]
-
-  images.forEach((src) => {
-    const img = new Image()
-    img.src = src
-  })
-}
-
-// Initialize preloading
-preloadImages()
-
-// Accessibility Improvements
-// Focus management for menu
-document.addEventListener("keydown", (e) => {
-  if (isMenuOpen && e.key === "Tab") {
-    const focusableElements = fullscreenMenu.querySelectorAll("a, button")
-    const firstElement = focusableElements[0]
-    const lastElement = focusableElements[focusableElements.length - 1]
-
-    if (e.shiftKey && document.activeElement === firstElement) {
-      e.preventDefault()
-      lastElement.focus()
-    } else if (!e.shiftKey && document.activeElement === lastElement) {
-      e.preventDefault()
-      firstElement.focus()
-    }
-  }
-})
-
-// Performance Optimizations
-// Throttle scroll events
+// ===== UTILITY FUNCTIONS =====
 function throttle(func, limit) {
   let inThrottle
   return function () {
     const args = arguments
-
     if (!inThrottle) {
       func.apply(this, args)
       inThrottle = true
@@ -362,35 +588,49 @@ function throttle(func, limit) {
   }
 }
 
-// Apply throttling to scroll events
-window.addEventListener(
-  "scroll",
-  throttle(() => {
-    updateScrollProgress()
-    updateActiveSection()
-    updateNavBackground()
-  }, 16),
-)
+// ===== 3D TILT EFFECTS =====
+document.querySelectorAll(".tilt-card").forEach((card) => {
+  card.addEventListener("mousemove", (e) => {
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    const rotateX = (y - centerY) / 10
+    const rotateY = (centerX - x) / 10
 
-// Initialize on DOM load
-document.addEventListener("DOMContentLoaded", () => {
-  // Hide loading screen initially
-  document.body.style.overflow = "hidden"
-
-  // Set initial styles for reveal elements
-  const revealElements = document.querySelectorAll(".reveal-text, .reveal-image, .reveal-card")
-  revealElements.forEach((element) => {
-    element.style.transition = "all 0.8s ease"
+    gsap.to(card, {
+      rotationX: rotateX,
+      rotationY: rotateY,
+      transformPerspective: 1000,
+      duration: 0.3,
+      ease: "power2.out",
+    })
   })
 
-  // Set initial theme
-  const savedTheme = localStorage.getItem("theme")
-  if (savedTheme === "light") {
-    document.body.classList.add("light-mode")
-  }
-
-  // Initialize scroll position
-  updateScrollProgress()
-  updateActiveSection()
-  updateNavBackground()
+  card.addEventListener("mouseleave", () => {
+    gsap.to(card, {
+      rotationX: 0,
+      rotationY: 0,
+      duration: 0.5,
+      ease: "elastic.out(1, 0.3)",
+    })
+  })
 })
+
+// Initialize split text after DOM load
+setTimeout(() => {
+  initializeSplitText()
+}, 1000)
+
+// Function to update scroll progress
+function updateScrollProgress() {
+  const scrollTop = window.pageYOffset
+  const windowHeight = window.innerHeight
+  const documentHeight = document.documentElement.scrollHeight
+
+  const scrollPercentage = (scrollTop / (documentHeight - windowHeight)) * 100
+  if (scrollProgress) {
+    scrollProgress.style.width = scrollPercentage + "%"
+  }
+}

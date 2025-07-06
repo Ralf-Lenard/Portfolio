@@ -7,23 +7,31 @@
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body class="dark-mode">
     <!-- Cursor -->
     <div class="custom-cursor"></div>
     <div class="cursor-follower"></div>
-
+    
     <!-- Noise Overlay -->
     <div class="noise-overlay"></div>
-
+    
+    <!-- Particle Background -->
+    <div class="particle-container">
+        <canvas id="particle-canvas"></canvas>
+    </div>
+    
     <!-- Loading Screen -->
     <div class="loading-screen" id="loading-screen">
         <div class="loading-content">
-            <svg class="loading-logo" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="40" stroke="currentColor" stroke-width="8" fill="none" />
-                <path class="loading-path" d="M 50,10 A 40,40 0 0 1 90,50" stroke="currentColor" stroke-width="8" fill="none" />
-            </svg>
+            <div class="loading-logo">
+                <div class="logo-ring"></div>
+                <div class="logo-ring"></div>
+                <div class="logo-ring"></div>
+            </div>
             <div class="loading-text">
                 <span>L</span>
                 <span>O</span>
@@ -36,6 +44,7 @@
             <div class="loading-bar">
                 <div class="loading-progress"></div>
             </div>
+            <div class="loading-percentage">0%</div>
         </div>
     </div>
 
@@ -44,53 +53,42 @@
         <div class="nav-container">
             <div class="nav-logo">
                 <a href="#home">
-                    <svg viewBox="0 0 50 50" class="logo-svg">
-                        <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="2" />
-                        <path d="M15,25 L35,25 M25,15 L25,35" stroke="currentColor" stroke-width="2" />
-                    </svg>
-                    <span>RALF</span>
+                    <div class="logo-container">
+                        <svg viewBox="0 0 50 50" class="logo-svg">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="2" />
+                            <path d="M15,25 L35,25 M25,15 L25,35" stroke="currentColor" stroke-width="2" />
+                        </svg>
+                        <div class="logo-glow"></div>
+                    </div>
+                    <span class="logo-text">RALF</span>
                 </a>
             </div>
             
-            <div class="nav-toggle" id="nav-toggle">
-                <div class="toggle-icon">
-                    <span></span>
-                    <span></span>
+            <div class="nav-links">
+                <a href="#home" class="nav-link">Home</a>
+                <a href="#about" class="nav-link">About</a>
+                <a href="#projects" class="nav-link">Projects</a>
+                <a href="#services" class="nav-link">Services</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
+
+            <div class="nav-actions">
+                <button id="theme-toggle" class="theme-toggle-btn">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon"></i>
+                    <div class="toggle-ball"></div>
+                </button>
+                <div class="nav-toggle" id="nav-toggle">
+                    <div class="toggle-icon">
+                        <span></span>
+                        <span></span>
+                    </div>
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Full Screen Menu -->
-    <div class="fullscreen-menu" id="fullscreen-menu">
-        <div class="menu-bg">
-            <div class="menu-bg-circle"></div>
-        </div>
-        <div class="menu-content">
-            <div class="menu-links">
-                <a href="#home" class="menu-link" data-text="Home">Home</a>
-                <a href="#about" class="menu-link" data-text="About">About</a>
-                <a href="#projects" class="menu-link" data-text="Projects">Projects</a>
-                <a href="#services" class="menu-link" data-text="Services">Services</a>
-                <a href="#contact" class="menu-link" data-text="Contact">Contact</a>
-            </div>
-            <div class="menu-footer">
-                <div class="menu-socials">
-                    <a href="https://www.facebook.com/ralf.capinding" class="social-icon"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-dribbble"></i></a>
-                    <a href="https://github.com/Ralf-Lenard" class="social-icon"><i class="fab fa-github"></i></a>
-                    <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
-                </div>
-                <div class="theme-switch">
-                    <button id="theme-toggle" class="theme-toggle-btn">
-                        <i class="fas fa-sun"></i>
-                        <i class="fas fa-moon"></i>
-                        <div class="toggle-ball"></div>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    <!-- Fullscreen Menu -->
 
     <!-- Fixed Elements -->
     <div class="fixed-elements">
@@ -100,23 +98,37 @@
             </div>
         </div>
         <div class="side-socials">
-            <a href="https://www.facebook.com/ralf.capinding" class="side-social-link"><i class="fab fa-facebook"></i></a>
-            <a href="#" class="side-social-link"><i class="fab fa-dribbble"></i></a>
-            <a href="https://github.com/Ralf-Lenard" class="side-social-link"><i class="fab fa-github"></i></a>
-            <a href="#" class="side-social-link"><i class="fab fa-linkedin-in"></i></a>
+            <a href="https://www.facebook.com/ralf.capinding" class="side-social-link">
+                <i class="fab fa-facebook"></i>
+                <span class="social-label">Facebook</span>
+            </a>
+            <a href="#" class="side-social-link">
+                <i class="fab fa-dribbble"></i>
+                <span class="social-label">Dribbble</span>
+            </a>
+            <a href="https://github.com/Ralf-Lenard" class="side-social-link">
+                <i class="fab fa-github"></i>
+                <span class="social-label">GitHub</span>
+            </a>
+            <a href="#" class="side-social-link">
+                <i class="fab fa-linkedin-in"></i>
+                <span class="social-label">LinkedIn</span>
+            </a>
             <div class="social-line"></div>
         </div>
         <div class="side-email">
-            <a href="mailto:capindingralf@gmail.com">capindingralflenard@gmail.com</a>
+            <a href="mailto:capindingralflenard@gmail.com">capindingralflenard@gmail.com</a>
             <div class="email-line"></div>
         </div>
     </div>
 
-    <!-- 3D floating elements -->
-    <div class="floating-3d-elements">
-        <div class="floating-cube"></div>
-        <div class="floating-sphere"></div>
-        <div class="floating-pyramid"></div>
+    <!-- Floating Elements -->
+    <div class="floating-elements">
+        <div class="floating-shape shape-1"></div>
+        <div class="floating-shape shape-2"></div>
+        <div class="floating-shape shape-3"></div>
+        <div class="floating-shape shape-4"></div>
+        <div class="floating-shape shape-5"></div>
     </div>
 
     <!-- Main Content -->
@@ -127,43 +139,48 @@
                 <div class="home-content">
                     <div class="home-subtitle reveal-text">
                         <div class="subtitle-line"></div>
-                        <span>Backend Developer</span>
+                        <span class="typewriter" data-text="Backend Developer"></span>
                     </div>
                     <h1 class="home-title">
-                        <span class="reveal-text">Ralf Lenard</span>
-                        <span class="reveal-text delay-1">Capinding</span>
+                        <span class="reveal-text split-text" data-text="Ralf Lenard">Ralf Lenard</span>
+                        <span class="reveal-text split-text delay-1" data-text="Capinding">Capinding</span>
                     </h1>
                     <div class="home-description reveal-text delay-2">
-                        <p>Creating digital experiences that blend <span class="highlight">innovation</span>, <span class="highlight">functionality</span>, and <span class="highlight">aesthetics</span>.</p>
+                        <p>Creating digital experiences that blend <span class="highlight glitch" data-text="innovation">innovation</span>, <span class="highlight glitch" data-text="functionality">functionality</span>, and <span class="highlight glitch" data-text="aesthetics">aesthetics</span>.</p>
                     </div>
                     <div class="home-cta reveal-text delay-3">
-                        <a href="#contact" class="btn btn-primary">
+                        <a href="#contact" class="btn btn-primary magnetic">
                             <span class="btn-text">Let's Talk</span>
                             <span class="btn-icon"><i class="fas fa-arrow-right"></i></span>
+                            <div class="btn-ripple"></div>
                         </a>
-                        <a href="#about" class="btn btn-secondary">
+                        <a href="#about" class="btn btn-secondary magnetic">
                             <span class="btn-text">About Me</span>
+                            <div class="btn-ripple"></div>
                         </a>
                     </div>
                 </div>
+                
                 <div class="home-visual">
                     <div class="visual-container">
                         <div class="visual-circle"></div>
-                        <div class="visual-img">
+                        <div class="visual-img reveal-image">
                             <img src="ralf.jpg" alt="Ralf Lenard">
                             <div class="img-overlay"></div>
+                            <div class="img-border"></div>
                         </div>
-                        <div class="visual-shapes">
-                            <div class="shape shape-1"></div>
-                            <div class="shape shape-2"></div>
-                            <div class="shape shape-3"></div>
+                        <div class="floating-icons">
+                            <div class="tech-icon" data-tech="PHP"><i class="fab fa-php"></i></div>
+                            <div class="tech-icon" data-tech="Laravel"><i class="fab fa-laravel"></i></div>
+                            <div class="tech-icon" data-tech="JavaScript"><i class="fab fa-js"></i></div>
+                            <div class="tech-icon" data-tech="Database"><i class="fas fa-database"></i></div>
                         </div>
                     </div>
                     <div class="home-3d">
                         <canvas id="three-canvas"></canvas>
                     </div>
                 </div>
-                
+            </div>
             <div class="section-number">01</div>
             <div class="scroll-down">
                 <span>Scroll</span>
@@ -181,12 +198,13 @@
                         <div class="subtitle-line"></div>
                         <span>About Me</span>
                     </div>
-                    <h2 class="section-title reveal-text delay-1">My Story & Expertise</h2>
+                    <h2 class="section-title reveal-text delay-1 split-text" data-text="My Story & Expertise">My Story & Expertise</h2>
                 </div>
                 
                 <div class="about-grid">
-                   <!-- Profile Card -->
-                   <div class="profile-card reveal-card" data-delay="0">
+                    <!-- Profile Card -->
+                    <div class="profile-card reveal-card tilt-card" data-delay="0">
+                        <div class="card-glow"></div>
                         <div class="profile-image">
                             <img src="ralf.jpg" alt="Ralf Lenard">
                             <div class="profile-overlay">
@@ -198,18 +216,19 @@
                         </div>
                         <div class="profile-stats">
                             <div class="stat-item">
-                                <span class="stat-number">Capstone</span>
+                                <span class="stat-number counter" data-target="1">0</span>
                                 <span class="stat-label">Project Completed</span>
                             </div>
                             <div class="stat-item">
-                                <span class="stat-number">Eager</span>
-                                <span class="stat-label">To Learn & Grow</span>
+                                <span class="stat-number">100%</span>
+                                <span class="stat-label">Eager To Learn</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Bio Card -->
-                    <div class="bio-card reveal-card" data-delay="100">
+                    <div class="bio-card reveal-card tilt-card" data-delay="100">
+                        <div class="card-glow"></div>
                         <div class="bio-content">
                             <h3>Hello, I'm Ralf!</h3>
                             <p>I'm a fresh graduate with a strong interest in backend development, especially in building secure, scalable systems using Laravel and PHP.</p>
@@ -233,66 +252,67 @@
                     </div>
 
                     <!-- Skills Card -->
-                    <div class="skills-card reveal-card" data-delay="200">
+                    <div class="skills-card reveal-card tilt-card" data-delay="200">
+                        <div class="card-glow"></div>
                         <h3>Technical Skills</h3>
                         <div class="skills-list">
-                            
                             <!-- Backend Skills -->
                             <div class="skill-category">
                                 <h4>Backend</h4>
                                 <div class="skill-tags">
-                                    <span class="skill-tag">PHP</span>
-                                    <span class="skill-tag">Laravel</span>
-                                    <span class="skill-tag">MySQL</span>
-                                    <span class="skill-tag">RESTful APIs</span>
-                                    <span class="skill-tag">Authentication</span>
-                                    <span class="skill-tag">Database Design</span>
+                                    <span class="skill-tag animated-tag">PHP</span>
+                                    <span class="skill-tag animated-tag">Laravel</span>
+                                    <span class="skill-tag animated-tag">MySQL</span>
+                                    <span class="skill-tag animated-tag">RESTful APIs</span>
+                                    <span class="skill-tag animated-tag">Authentication</span>
+                                    <span class="skill-tag animated-tag">Database Design</span>
                                 </div>
                             </div>
-                            <!-- Frontend (Basic Knowledge) -->
+                            <!-- Frontend Skills -->
                             <div class="skill-category">
                                 <h4>Frontend (Basic)</h4>
                                 <div class="skill-tags">
-                                    <span class="skill-tag">HTML5</span>
-                                    <span class="skill-tag">CSS3</span>
-                                    <span class="skill-tag">JavaScript</span>
-                                    <span class="skill-tag">Blade</span>
-                                    <span class="skill-tag">Bootstrap</span>
+                                    <span class="skill-tag animated-tag">HTML5</span>
+                                    <span class="skill-tag animated-tag">CSS3</span>
+                                    <span class="skill-tag animated-tag">JavaScript</span>
+                                    <span class="skill-tag animated-tag">Blade</span>
+                                    <span class="skill-tag animated-tag">Bootstrap</span>
                                 </div>
                             </div>
                             <!-- Tools -->
                             <div class="skill-category">
                                 <h4>Tools</h4>
                                 <div class="skill-tags">
-                                    <span class="skill-tag">Git</span>
-                                    <span class="skill-tag">Composer</span>
-                                    <span class="skill-tag">Postman</span>
-                                    <span class="skill-tag">XAMPP</span>
-                                    <span class="skill-tag">VS Code</span>
+                                    <span class="skill-tag animated-tag">Git</span>
+                                    <span class="skill-tag animated-tag">Composer</span>
+                                    <span class="skill-tag animated-tag">Postman</span>
+                                    <span class="skill-tag animated-tag">XAMPP</span>
+                                    <span class="skill-tag animated-tag">VS Code</span>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Education Card -->
-                    <div class="education-card reveal-card" data-delay="300">
+                    <div class="education-card reveal-card tilt-card" data-delay="300">
+                        <div class="card-glow"></div>
                         <h3>Education & Journey</h3>
                         <div class="education-timeline">
-                            <div class="timeline-item">
+                            <div class="timeline-item reveal-timeline" data-delay="0">
                                 <div class="timeline-year">2020-2024</div>
                                 <div class="timeline-content">
                                     <h4>Tarlac State University</h4>
                                     <p>Bachelor of Science in Information Technology</p>
                                 </div>
                             </div>
-                            <div class="timeline-item">
+                            <div class="timeline-item reveal-timeline" data-delay="100">
                                 <div class="timeline-year">2016-2020</div>
                                 <div class="timeline-content">
                                     <h4>Benigno S. Aquino National High School</h4>
                                     <p>Science, Technology, Engineering, and Mathematics</p>
                                 </div>
                             </div>
-                            <div class="timeline-item">
+                            <div class="timeline-item reveal-timeline" data-delay="200">
                                 <div class="timeline-year">2010-2016</div>
                                 <div class="timeline-content">
                                     <h4>Sta Cruz Concepcion Tarlac</h4>
@@ -306,7 +326,7 @@
             <div class="section-number">02</div>
         </section>
 
-       <!-- Projects Section -->
+        <!-- Projects Section -->
         <section id="projects" class="section projects-section">
             <div class="container">
                 <div class="section-header">
@@ -314,24 +334,30 @@
                         <div class="subtitle-line"></div>
                         <span>My Projects</span>
                     </div>
-                    <h2 class="section-title reveal-text delay-1">Featured Work</h2>
+                    <h2 class="section-title reveal-text delay-1 split-text" data-text="Featured Work">Featured Work</h2>
                 </div>
                 
                 <div class="projects-grid">
                     <!-- Noah's Ark -->
-                    <div class="project-card reveal-card" data-delay="0">
+                    <div class="project-card reveal-card tilt-card" data-delay="0">
+                        <div class="card-glow"></div>
                         <div class="project-image">
-                            <img src="https://images.unsplash.com/photo-1592194996308-7b43878e84a6?w=800&h=500&fit=crop" alt="Noah’s Ark Pet Locator">
+                            <img src="Noah.png" alt="Noah's Ark Pet Locator">
                             <div class="project-overlay">
                                 <div class="project-links">
-                                    <a href="#" class="project-link" title="View Live"><i class="fas fa-external-link-alt"></i></a>
-                                    <a href="https://github.com/Ralf-Lenard" class="project-link" title="View Code"><i class="fab fa-github"></i></a>
+                                    <a href="#" class="project-link magnetic" title="View Live">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                    <a href="https://github.com/Ralf-Lenard" class="project-link magnetic" title="View Code">
+                                        <i class="fab fa-github"></i>
+                                    </a>
                                 </div>
                             </div>
+                            <div class="project-number">01</div>
                         </div>
                         <div class="project-content">
                             <div class="project-category">Capstone Project</div>
-                            <h3 class="project-title">Noah’s Ark: NFC-based Pet Locator</h3>
+                            <h3 class="project-title">Noah's Ark: NFC-based Pet Locator</h3>
                             <p class="project-description">A real-time pet locator and monitoring system using NFC and Google Maps API. Features include live pet tracking, admin dashboard, abuse reporting, and adoption management.</p>
                             <div class="project-tech">
                                 <span class="tech-tag">Laravel</span>
@@ -344,15 +370,21 @@
                     </div>
 
                     <!-- EduTrack -->
-                    <div class="project-card reveal-card" data-delay="100">
+                    <div class="project-card reveal-card tilt-card" data-delay="100">
+                        <div class="card-glow"></div>
                         <div class="project-image">
-                            <img src="https://images.unsplash.com/photo-1559027615-7d2cda3c531a?w=800&h=500&fit=crop" alt="EduTrack Grading System">
+                            <img src="Edutrack.png" alt="EduTrack Grading System">
                             <div class="project-overlay">
                                 <div class="project-links">
-                                    <a href="#" class="project-link" title="View Live"><i class="fas fa-external-link-alt"></i></a>
-                                    <a href="https://github.com/Ralf-Lenard" class="project-link" title="View Code"><i class="fab fa-github"></i></a>
+                                    <a href="#" class="project-link magnetic" title="View Live">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                    <a href="https://github.com/Ralf-Lenard" class="project-link magnetic" title="View Code">
+                                        <i class="fab fa-github"></i>
+                                    </a>
                                 </div>
                             </div>
+                            <div class="project-number">02</div>
                         </div>
                         <div class="project-content">
                             <div class="project-category">Real-time Grading System</div>
@@ -367,16 +399,22 @@
                         </div>
                     </div>
 
-                    <!-- Pet Inventory & Appointment -->
-                    <div class="project-card reveal-card" data-delay="200">
+                    <!-- Pet Inventory -->
+                    <div class="project-card reveal-card tilt-card" data-delay="200">
+                        <div class="card-glow"></div>
                         <div class="project-image">
                             <img src="https://images.unsplash.com/photo-1603297661989-718851d7f5a6?w=800&h=500&fit=crop" alt="Pet Inventory">
                             <div class="project-overlay">
                                 <div class="project-links">
-                                    <a href="#" class="project-link" title="View Live"><i class="fas fa-external-link-alt"></i></a>
-                                    <a href="https://github.com/Ralf-Lenard" class="project-link" title="View Code"><i class="fab fa-github"></i></a>
+                                    <a href="#" class="project-link magnetic" title="View Live">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                    <a href="https://github.com/Ralf-Lenard" class="project-link magnetic" title="View Code">
+                                        <i class="fab fa-github"></i>
+                                    </a>
                                 </div>
                             </div>
+                            <div class="project-number">03</div>
                         </div>
                         <div class="project-content">
                             <div class="project-category">Pet Store System</div>
@@ -391,16 +429,22 @@
                         </div>
                     </div>
 
-                    <!-- Business Permit System -->
-                    <div class="project-card reveal-card" data-delay="300">
+                    <!-- Business Permit -->
+                    <div class="project-card reveal-card tilt-card" data-delay="300">
+                        <div class="card-glow"></div>
                         <div class="project-image">
                             <img src="https://images.unsplash.com/photo-1637737085450-2679eb3340e3?w=800&h=500&fit=crop" alt="Business Permit">
                             <div class="project-overlay">
                                 <div class="project-links">
-                                    <a href="#" class="project-link" title="View Live"><i class="fas fa-external-link-alt"></i></a>
-                                    <a href="https://github.com/Ralf-Lenard" class="project-link" title="View Code"><i class="fab fa-github"></i></a>
+                                    <a href="#" class="project-link magnetic" title="View Live">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                    <a href="https://github.com/Ralf-Lenard" class="project-link magnetic" title="View Code">
+                                        <i class="fab fa-github"></i>
+                                    </a>
                                 </div>
                             </div>
+                            <div class="project-number">04</div>
                         </div>
                         <div class="project-content">
                             <div class="project-category">Document Management</div>
@@ -416,15 +460,21 @@
                     </div>
 
                     <!-- Pharmacy Inventory -->
-                    <div class="project-card reveal-card" data-delay="400">
+                    <div class="project-card reveal-card tilt-card" data-delay="400">
+                        <div class="card-glow"></div>
                         <div class="project-image">
                             <img src="https://images.unsplash.com/photo-1588776814546-ec7d4e2bb257?w=800&h=500&fit=crop" alt="Pharmacy System">
                             <div class="project-overlay">
                                 <div class="project-links">
-                                    <a href="#" class="project-link" title="View Live"><i class="fas fa-external-link-alt"></i></a>
-                                    <a href="https://github.com/Ralf-Lenard" class="project-link" title="View Code"><i class="fab fa-github"></i></a>
+                                    <a href="#" class="project-link magnetic" title="View Live">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </a>
+                                    <a href="https://github.com/Ralf-Lenard" class="project-link magnetic" title="View Code">
+                                        <i class="fab fa-github"></i>
+                                    </a>
                                 </div>
                             </div>
+                            <div class="project-number">05</div>
                         </div>
                         <div class="project-content">
                             <div class="project-category">Pharmaceutical</div>
@@ -443,7 +493,6 @@
             <div class="section-number">03</div>
         </section>
 
-
         <!-- Services Section -->
         <section id="services" class="section services-section">
             <div class="container">
@@ -452,15 +501,16 @@
                         <div class="subtitle-line"></div>
                         <span>My Services</span>
                     </div>
-                    <h2 class="section-title reveal-text delay-1">What I Offer</h2>
+                    <h2 class="section-title reveal-text delay-1 split-text" data-text="What I Offer">What I Offer</h2>
                 </div>
                 <div class="services-grid">
                     <!-- Backend Development -->
-                    <div class="service-card reveal-card" data-delay="0">
+                    <div class="service-card reveal-card tilt-card" data-delay="0">
+                        <div class="card-glow"></div>
                         <div class="service-image">
                             <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&h=400&fit=crop" alt="Backend Development">
                             <div class="service-overlay">
-                                <div class="service-icon">
+                                <div class="service-icon floating-icon">
                                     <i class="fas fa-server"></i>
                                 </div>
                             </div>
@@ -479,11 +529,12 @@
                     </div>
 
                     <!-- API Integration -->
-                    <div class="service-card reveal-card" data-delay="100">
+                    <div class="service-card reveal-card tilt-card" data-delay="100">
+                        <div class="card-glow"></div>
                         <div class="service-image">
                             <img src="https://www.ibexa.co/var/site/storage/images/_aliases/ibexa_content_full/3/4/1/0/300143-1-eng-GB/d4255a27c1fa-AdobeStock_261705271_What-is-an-API.jpeg?w=600&h=400&fit=crop" alt="API Development">
                             <div class="service-overlay">
-                                <div class="service-icon">
+                                <div class="service-icon floating-icon">
                                     <i class="fas fa-plug"></i>
                                 </div>
                             </div>
@@ -502,11 +553,12 @@
                     </div>
 
                     <!-- Database Architecture -->
-                    <div class="service-card reveal-card" data-delay="200">
+                    <div class="service-card reveal-card tilt-card" data-delay="200">
+                        <div class="card-glow"></div>
                         <div class="service-image">
                             <img src="https://images.unsplash.com/photo-1556761175-4b46a572b786?w=600&h=400&fit=crop" alt="Database Architecture">
                             <div class="service-overlay">
-                                <div class="service-icon">
+                                <div class="service-icon floating-icon">
                                     <i class="fas fa-database"></i>
                                 </div>
                             </div>
@@ -524,12 +576,13 @@
                         </div>
                     </div>
 
-                    <!-- Basic Frontend Support -->
-                    <div class="service-card reveal-card" data-delay="300">
+                    <!-- Frontend Support -->
+                    <div class="service-card reveal-card tilt-card" data-delay="300">
+                        <div class="card-glow"></div>
                         <div class="service-image">
                             <img src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600&h=400&fit=crop" alt="Frontend Support">
                             <div class="service-overlay">
-                                <div class="service-icon">
+                                <div class="service-icon floating-icon">
                                     <i class="fas fa-code"></i>
                                 </div>
                             </div>
@@ -559,22 +612,22 @@
                         <div class="subtitle-line"></div>
                         <span>Get In Touch</span>
                     </div>
-                    <h2 class="section-title reveal-text delay-1">Let's Work Together</h2>
+                    <h2 class="section-title reveal-text delay-1 split-text" data-text="Let's Work Together">Let's Work Together</h2>
                 </div>
                 
                 <div class="contact-content">
                     <div class="contact-info reveal-text delay-2">
-                        <div class="info-item">
+                        <div class="info-item reveal-card" data-delay="0">
                             <div class="info-icon">
                                 <i class="fas fa-envelope"></i>
                             </div>
                             <div class="info-content">
                                 <h3>Email</h3>
-                                <a href="mailto:capindingralf@gmail.com">capindingralflenard@gmail.com</a>
+                                <a href="mailto:capindingralflenard@gmail.com">capindingralflenard@gmail.com</a>
                             </div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item reveal-card" data-delay="100">
                             <div class="info-icon">
                                 <i class="fas fa-phone-alt"></i>
                             </div>
@@ -584,7 +637,7 @@
                             </div>
                         </div>
                         
-                        <div class="info-item">
+                        <div class="info-item reveal-card" data-delay="200">
                             <div class="info-icon">
                                 <i class="fas fa-map-marker-alt"></i>
                             </div>
@@ -594,13 +647,21 @@
                             </div>
                         </div>
                         
-                        <div class="contact-socials">
+                        <div class="contact-socials reveal-card" data-delay="300">
                             <h3>Follow Me</h3>
                             <div class="social-links">
-                                <a href="https://www.facebook.com/ralf.capinding" class="social-link"><i class="fab fa-facebook"></i></a>
-                                <a href="#" class="social-link"><i class="fab fa-dribbble"></i></a>
-                                <a href="https://github.com/Ralf-Lenard" class="social-link"><i class="fab fa-github"></i></a>
-                                <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                                <a href="https://www.facebook.com/ralf.capinding" class="social-link magnetic">
+                                    <i class="fab fa-facebook"></i>
+                                </a>
+                                <a href="#" class="social-link magnetic">
+                                    <i class="fab fa-dribbble"></i>
+                                </a>
+                                <a href="https://github.com/Ralf-Lenard" class="social-link magnetic">
+                                    <i class="fab fa-github"></i>
+                                </a>
+                                <a href="#" class="social-link magnetic">
+                                    <i class="fab fa-linkedin-in"></i>
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -631,9 +692,10 @@
                                 <div class="form-line"></div>
                             </div>
                             
-                            <button type="submit" class="btn btn-primary">
+                            <button type="submit" class="btn btn-primary magnetic">
                                 <span class="btn-text">Send Message</span>
                                 <span class="btn-icon"><i class="fas fa-paper-plane"></i></span>
+                                <div class="btn-ripple"></div>
                             </button>
                         </form>
                     </div>
@@ -664,10 +726,18 @@
                 </div>
                 
                 <div class="footer-socials">
-                    <a href="https://www.facebook.com/ralf.capinding" class="social-link"><i class="fab fa-facebook"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-dribbble"></i></a>
-                    <a href="https://github.com/Ralf-Lenard" class="social-link"><i class="fab fa-github"></i></a>
-                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.facebook.com/ralf.capinding" class="social-link magnetic">
+                        <i class="fab fa-facebook"></i>
+                    </a>
+                    <a href="#" class="social-link magnetic">
+                        <i class="fab fa-dribbble"></i>
+                    </a>
+                    <a href="https://github.com/Ralf-Lenard" class="social-link magnetic">
+                        <i class="fab fa-github"></i>
+                    </a>
+                    <a href="#" class="social-link magnetic">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
                 </div>
             </div>
             
@@ -678,8 +748,7 @@
         </div>
     </footer>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="script.js"></script>
-    <script src="three-scene.js"></script>
+    <script src="script.js" defer></script>
+    <script src="three-scene.js" defer></script>
 </body>
 </html>
